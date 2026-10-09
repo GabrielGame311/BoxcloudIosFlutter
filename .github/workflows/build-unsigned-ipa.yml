@@ -22,9 +22,11 @@ jobs:
 
       - name: Install dependencies
         run: flutter pub get
+        working-directory: dashboard_app
 
       - name: Build unsigned iOS app
         run: flutter build ios --release --no-codesign
+        working-directory: dashboard_app
 
       - name: Package unsigned IPA
         run: |
@@ -32,11 +34,12 @@ jobs:
           cp -R build/ios/iphoneos/Runner.app build/ios/ipa/Payload/Runner.app
           cd build/ios/ipa
           /usr/bin/zip -qry Runner-unsigned.ipa Payload
+        working-directory: dashboard_app
 
       - name: Upload IPA artifact
         uses: actions/upload-artifact@v4
         with:
           name: dashboard-app-unsigned-ipa
-          path: build/ios/ipa/Runner-unsigned.ipa
+          path: dashboard_app/build/ios/ipa/Runner-unsigned.ipa
           if-no-files-found: error
           retention-days: 14
